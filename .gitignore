@@ -1,0 +1,6 @@
+# Project exclude paths
+/cmake-build-debug/
+/.idea/misc.xml
+/.idea/ListPrinter.iml
+/.idea/modules.xml
+/.idea/vcs.xml

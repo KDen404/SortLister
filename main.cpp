@@ -70,6 +70,14 @@ std::vector<std::vector<unsigned int>> MergeSort(std::vector<unsigned int> v)
     return steps;
 }
 
+//HeapSort which saves each step in a 2D vector
+std::vector<std::vector<unsigned int>> HeapSort(std::vector<unsigned int> v)
+{
+    std::vector<std::vector<unsigned int>> steps;
+    steps.push_back(v);
+    //TODO Implement HeapSort
+    return steps;
+}
 
 
 template <typename T>
