@@ -51,31 +51,134 @@ std::vector<std::vector<unsigned int>> BubbleSort(std::vector<unsigned int> v)
     return steps;
 }
 
+//partition function for QuickSort which saves every step in a 2D vector
+int partition(std::vector<unsigned int>& vec, int start, int end)
+{
+    int pivot = vec[end];
+    int i = (start - 1);
+
+    for (int j = start; j <= end - 1; j++)
+    {
+        if (vec[j] < pivot)
+        {
+            i++;
+            std::swap(vec[i], vec[j]);
+        }
+    }
+    std::swap(vec[i + 1], vec[end]);
+    return (i + 1);
+}
+
 
 //QuickSort which saves each step in a 2D vector
-std::vector<std::vector<unsigned int>> QuickSort(std::vector<unsigned int> v)
+std::vector<std::vector<unsigned int>> QuickSort(std::vector<unsigned int>& vec, int start, int end)
 {
-    std::vector<std::vector<unsigned int>> steps;
-    steps.push_back(v);
-    //TODO Implement QuickSort
+    static std::vector<std::vector<unsigned int>> steps;
+    if (start < end)
+    {
+        steps.push_back(vec);
+        int pi = partition(vec, start, end);
+        QuickSort(vec, start, pi - 1);
+        QuickSort(vec, pi + 1, end);
+    }
+
     return steps;
 }
+
+
+//merge function for MergeSort which saves every step in a 2D vector
+void merge(std::vector<unsigned int>& v, int start, int mid, int end)
+{
+    std::vector<unsigned int> left;
+    std::vector<unsigned int> right;
+
+    for (int i = start; i <= mid; i++)
+        left.push_back(v[i]);
+    for (int i = mid + 1; i <= end; i++)
+        right.push_back(v[i]);
+
+    int i = 0, j = 0, k = start;
+    while (i < left.size() && j < right.size())
+    {
+        if (left[i] <= right[j])
+        {
+            v[k] = left[i];
+            i++;
+        }
+        else
+        {
+            v[k] = right[j];
+            j++;
+        }
+        k++;
+    }
+
+    while (i < left.size())
+    {
+        v[k] = left[i];
+        i++;
+        k++;
+    }
+
+    while (j < right.size())
+    {
+        v[k] = right[j];
+        j++;
+        k++;
+    }
+}
+
 
 //MergeSort which saves each step in a 2D vector
-std::vector<std::vector<unsigned int>> MergeSort(std::vector<unsigned int> v)
+std::vector<std::vector<unsigned int>> MergeSort(std::vector<unsigned int>& v, int start, int end)
 {
-    std::vector<std::vector<unsigned int>> steps;
-    steps.push_back(v);
-    //TODO Implement MergeSort
+    static std::vector<std::vector<unsigned int>> steps;
+
+    if (start < end) {
+        int mid = start + (end - start) / 2;
+        // Sort first and second alves
+        steps.push_back(v);
+        MergeSort(v, start, mid);
+        merge(v, start, mid, end);
+        MergeSort(v, mid + 1, end);
+
+    }
+
     return steps;
 }
 
-//HeapSort which saves each step in a 2D vector
-std::vector<std::vector<unsigned int>> HeapSort(std::vector<unsigned int> v)
+//HeapSort helper function
+void heapify(std::vector<unsigned int>& v, int n, int i)
 {
-    std::vector<std::vector<unsigned int>> steps;
-    steps.push_back(v);
-    //TODO Implement HeapSort
+    int largest = i;
+    int l = 2 * i + 1;
+    int r = 2 * i + 2;
+
+    if (l < n && v[l] > v[largest])
+        largest = l;
+
+    if (r < n && v[r] > v[largest])
+        largest = r;
+
+    if (largest != i) {
+        std::swap(v[i], v[largest]);
+        heapify(v, n, largest);
+    }
+}
+
+
+//HeapSort which saves each step in a 2D vector
+std::vector<std::vector<unsigned int>> HeapSort(std::vector<unsigned int>& v, int n)
+{
+    static std::vector<std::vector<unsigned int>> steps;
+    for (int i = n / 2 - 1; i >= 0; i--)
+        heapify(v, n, i);
+
+    for (int i = n - 1; i > 0; i--) {
+        std::swap(v[0], v[i]);
+        heapify(v, i, 0);
+        steps.push_back(v);
+    }
     return steps;
 }
 
@@ -120,7 +223,20 @@ int main() {
 
     std::cout << "QuickSort:" << std::endl;
     result.clear();
-result = QuickSort(v1);
+    auto v2 = v1;
+    result = QuickSort(v2, 0, v1.size() - 1);
+    printVector<unsigned int>(result);
+
+    std::cout << "MergeSort:" << std::endl;
+    result.clear();
+    v2 = v1;
+    result = MergeSort(v2, 0, v1.size() - 1);
+    printVector<unsigned int>(result);
+
+    std::cout << "HeapSort:" << std::endl;
+    result.clear();
+    v2 = v1;
+    result = HeapSort(v2, v2.size());
     printVector<unsigned int>(result);
 
 
